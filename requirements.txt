@@ -1,0 +1,5 @@
+pip~=23.2.1
+Django~=5.1.2
+asgiref~=3.8.1
+sqlparse~=0.5.1
+django-rest-framework
