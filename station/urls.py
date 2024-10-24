@@ -3,6 +3,7 @@ from rest_framework import routers
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from Train_Station_API_Service import settings
 from station.views import (
     StationViewSet,
     RouteViewSet,
