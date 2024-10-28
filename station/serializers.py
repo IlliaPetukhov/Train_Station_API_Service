@@ -1,5 +1,9 @@
+from urllib import request
+
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
+from django.db import transaction
+from rest_framework.relations import SlugRelatedField, PrimaryKeyRelatedField
 
 from station.models import (
     Station,
@@ -10,6 +14,7 @@ from station.models import (
     Journey,
     Crew, Order
 )
+from user.serializers import UserSerializer
 
 
 class StationSerializer(serializers.ModelSerializer):
@@ -18,7 +23,14 @@ class StationSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "latitude", "longitude"]
 
 
-class RouteSerializer(serializers.ModelSerializer):
+class RouteSerializerPost(serializers.ModelSerializer):
+
+    class Meta:
+        model = Route
+        fields = ("id", "source", "destination", "distance")
+
+
+class RouteSerializerGet(serializers.ModelSerializer):
     source = serializers.CharField(
         source="source.name",
         read_only=True,
@@ -66,7 +78,7 @@ class JourneySerializerPost(serializers.ModelSerializer):
 
 
 class JourneySerializerGet(serializers.ModelSerializer):
-    route = RouteSerializer(read_only=True)
+    route = RouteSerializerGet(read_only=True)
     train = TrainSerializerGet(read_only=True)
 
     class Meta:
@@ -79,7 +91,7 @@ class TicketSerializerGet(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ["cargo", "seats", "journey"]
+        fields = ["cargo", "seats", "journey", "order"]
 
 
 class TicketSerializerPost(serializers.ModelSerializer):
@@ -88,8 +100,35 @@ class TicketSerializerPost(serializers.ModelSerializer):
         model = Ticket
         fields = ["cargo", "seats", "journey"]
 
+    def validate(self, attrs):
+        cargo = attrs.get("cargo")
+        seats = attrs.get("seats")
+        journey = attrs.get("journey")
+        max_cargo = journey.train.cargo_num
+        max_seats = journey.train.places_in_cargo
+        if Ticket.objects.filter(journey=journey, cargo=cargo, seats=seats).exists():
+            raise serializers.ValidationError("This seat is already in use.")
+        if int(cargo) > int(max_cargo):
+            raise (serializers.ValidationError
+                   ("The cargo in the ticket must be less than or equal to the maximum cargo."))
+        if int(seats) > int(max_seats):
+            raise (serializers.ValidationError
+                   ("The seats in the ticket must be less than or equal to the maximum seats."))
+        return attrs
 
-class OrderSerializer(serializers.ModelSerializer):
+
+class OrderSerializerPost(serializers.ModelSerializer):
+    tickets = PrimaryKeyRelatedField(many=True, queryset=Ticket.objects.filter(order__isnull=True))
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ["created_at", "user", "tickets"]
+
+
+class OrderSerializerGet(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    tickets = TicketSerializerGet(many=True)
 
     class Meta:
         model = Order
