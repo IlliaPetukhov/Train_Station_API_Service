@@ -19,6 +19,6 @@ class Command(BaseCommand):
                 time.sleep(3)
             except Exception as e:
                 self.stdout.write(f"An error occurred: {str(e)}")
-                time.sleep(2)
+                time.sleep(3)
             else:
                 self.stdout.write("Database available.")

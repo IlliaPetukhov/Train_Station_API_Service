@@ -1,0 +1,13 @@
+venv/
+.idea/
+node_modules/
+
+
+*.sqlite3
+*.sqlite
+*.log
+*.db
+
+lib
+bin
+__pycache__

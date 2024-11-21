@@ -118,12 +118,20 @@ class TicketSerializerPost(serializers.ModelSerializer):
 
 
 class OrderSerializerPost(serializers.ModelSerializer):
-    tickets = PrimaryKeyRelatedField(many=True, queryset=Ticket.objects.filter(order__isnull=True))
     user = UserSerializer(read_only=True)
+    tickets = TicketSerializerPost(many=True)
 
     class Meta:
         model = Order
         fields = ["created_at", "user", "tickets"]
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            tickets_data = validated_data.pop("tickets")
+            order = Order.objects.create(**validated_data)
+            for ticket_data in tickets_data:
+                Ticket.objects.create(order=order, **ticket_data)
+            return order
 
 
 class OrderSerializerGet(serializers.ModelSerializer):

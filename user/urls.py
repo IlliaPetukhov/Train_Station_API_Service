@@ -1,6 +1,8 @@
 from django.urls import path
 from django.urls.conf import include
 from rest_framework.routers import DefaultRouter
+from django.conf.urls.static import static
+from django.conf import settings
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -9,6 +11,12 @@ from rest_framework_simplejwt.views import (
 )
 
 from user.views import UserViewSet
+
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 
 app_name = "user"
 router = DefaultRouter()
@@ -19,4 +27,4 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("manage/", include(router.urls), name="user"),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
