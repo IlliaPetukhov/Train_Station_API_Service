@@ -27,6 +27,4 @@ router.register("journeys", JourneyViewSet, basename="journeys")
 router.register("orders", OrderViewSet, basename="orders")
 router.register("tickets", TicketViewSet, basename="tickets")
 
-urlpatterns = [
-    path("", include(router.urls), name="station"),
-]
+urlpatterns = router.urls
