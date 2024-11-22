@@ -41,7 +41,7 @@ class Crew(models.Model):
 
 class TrainType(models.Model):
     name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to="train_types")
+    image = models.ImageField(upload_to="train_types", blank=True)
 
     def __str__(self):
         return self.name
