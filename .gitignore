@@ -11,3 +11,14 @@ docker-compose.yaml
 lib
 bin
 __pycache__
+
+# Компилированные файлы Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+/media
+.env
+
+
+
