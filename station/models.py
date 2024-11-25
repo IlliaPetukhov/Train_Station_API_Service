@@ -58,7 +58,8 @@ class Train(models.Model):
 
     @property
     def train_info(self):
-        return f"Train_type: {self.train_type.name}, Train name: {self.name}"
+        return (f"Train_type: {self.train_type.name}, Train name:"
+                f" {self.name}")
 
 
 class Journey(models.Model):
@@ -68,7 +69,8 @@ class Journey(models.Model):
     arrival_time = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.route} - {self.train.name} - {self.train.train_type.name}"
+        return (f"{self.route} - {self.train.name}"
+                f" - {self.train.train_type.name}")
 
     @property
     def route_name(self):
@@ -87,7 +89,8 @@ class Ticket(models.Model):
     cargo = models.IntegerField()
     seats = models.IntegerField()
     journey = models.ForeignKey(Journey, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets", null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,
+                              related_name="tickets", null=True)
 
     def __str__(self):
         return f"{self.journey}"
@@ -99,5 +102,6 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["cargo", "seats"], name="unique_cargo_seat")
+            models.UniqueConstraint(fields=["cargo", "seats"],
+                                    name="unique_cargo_seat")
         ]

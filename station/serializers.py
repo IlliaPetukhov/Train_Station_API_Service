@@ -1,9 +1,5 @@
-from urllib import request
-
-from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.db import transaction
-from rest_framework.relations import SlugRelatedField, PrimaryKeyRelatedField
 
 from station.models import (
     Station,
@@ -60,7 +56,8 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 class TrainSerializerPost(serializers.ModelSerializer):
     class Meta:
         model = Train
-        fields = ["id", "name", "cargo_num", "places_in_cargo", "train_type"]
+        fields = ["id", "name", "cargo_num", "places_in_cargo",
+                  "train_type"]
 
 
 class TrainSerializerGet(serializers.ModelSerializer):
@@ -68,7 +65,8 @@ class TrainSerializerGet(serializers.ModelSerializer):
 
     class Meta:
         model = Train
-        fields = ["id", "name", "cargo_num", "places_in_cargo", "train_type"]
+        fields = ["id", "name", "cargo_num", "places_in_cargo",
+                  "train_type"]
 
 
 class JourneySerializerPost(serializers.ModelSerializer):
@@ -106,14 +104,18 @@ class TicketSerializerPost(serializers.ModelSerializer):
         journey = attrs.get("journey")
         max_cargo = journey.train.cargo_num
         max_seats = journey.train.places_in_cargo
-        if Ticket.objects.filter(journey=journey, cargo=cargo, seats=seats).exists():
-            raise serializers.ValidationError("This seat is already in use.")
+        if Ticket.objects.filter(journey=journey, cargo=cargo,
+                                 seats=seats).exists():
+            raise (serializers.ValidationError
+                   ("This seat is already in use."))
         if int(cargo) > int(max_cargo):
             raise (serializers.ValidationError
-                   ("The cargo in the ticket must be less than or equal to the maximum cargo."))
+                   ("The cargo in the ticket must be "
+                    "less than or equal to the maximum cargo."))
         if int(seats) > int(max_seats):
             raise (serializers.ValidationError
-                   ("The seats in the ticket must be less than or equal to the maximum seats."))
+                   ("The seats in the ticket must be "
+                    "less than or equal to the maximum seats."))
         return attrs
 
 

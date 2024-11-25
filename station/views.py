@@ -95,8 +95,10 @@ class JourneyViewSet(viewsets.ModelViewSet):
         departure_time = self.request.query_params.get("departure_time")
         route = self.request.query_params.get("route")
         if departure_time:
-            departure_time = datetime.strptime(departure_time, "%Y-%m-%d").date()
-            return Journey.objects.filter(departure_time__gte=departure_time)
+            departure_time = datetime.strptime(departure_time,
+                                               "%Y-%m-%d").date()
+            return (Journey.objects.filter
+                    (departure_time__gte=departure_time))
         if route:
             return Journey.objects.filter(route=route)
         return Journey.objects.all()
@@ -129,7 +131,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         return serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
-        if self.action == "list" or (self.action == "retrieve" and self.request.method == "GET"):
+        if self.action == "list" or (self.action == "retrieve" and
+                                     self.request.method == "GET"):
             return OrderSerializerGet
         return OrderSerializerPost
 
@@ -143,5 +146,3 @@ class TicketViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return TicketSerializerGet
         return TicketSerializerPost
-
-

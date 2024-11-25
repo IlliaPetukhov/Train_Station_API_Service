@@ -17,20 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
-from django.conf.urls.static import static
-from django.urls import path
-from django.urls.conf import include
-from rest_framework.routers import DefaultRouter
-from django.conf.urls.static import static
-from django.conf import settings
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+from django.conf.urls.static import static
 
-from user.views import UserViewSet
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -42,9 +31,11 @@ from Train_Station_API_Service import settings
 
 urlpatterns = [
                   path("admin/", admin.site.urls),
-                  path("train-station-ap1/", include("station.urls"), name="train-station-ap1"),
+                  path("train-station-ap1/", include("station.urls"),
+                       name="train-station-ap1"),
                   path("user/", include("user.urls"), name="user"),
-                  path("api/doc/schema/", SpectacularAPIView.as_view(), name="schema"),
+                  path("api/doc/schema/", SpectacularAPIView.as_view(),
+                       name="schema"),
                   path(
                       "api/doc/swagger/",
                       SpectacularSwaggerView.as_view(url_name="schema"),

@@ -1,9 +1,9 @@
 FROM python:3.12.1-slim
 LABEL authors="ilaruslanovich7@gmail.com"
 
-ENV PYTHONBUFFERED 1
+ENV PYTHONBUFFERED=1
 
-WORKDIR app/
+WORKDIR /app
 
 COPY requirements.txt requirements.txt
 

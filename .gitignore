@@ -1,8 +1,8 @@
 venv/
 .idea/
 node_modules/
-
-
+Dockerfile
+docker-compose.yaml
 *.sqlite3
 *.sqlite
 *.log
