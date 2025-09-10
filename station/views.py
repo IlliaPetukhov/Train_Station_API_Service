@@ -95,8 +95,8 @@ class JourneyViewSet(viewsets.ModelViewSet):
         departure_time = self.request.query_params.get("departure_time")
         route = self.request.query_params.get("route")
         if departure_time:
-            departure_time = datetime.strptime(departure_time,
-                                               "%Y-%m-%d").date()
+            departure_time = (datetime.strptime
+                              (departure_time,"%Y-%m-%d").date())
             return (Journey.objects.filter
                     (departure_time__gte=departure_time))
         if route:
